@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import type { Todo } from "../types/Todo.types";
 import { MdDelete } from "react-icons/md";
 
-const ToDoList: React.FC = () => {
+const TodoList: React.FC = () => {
 
   const [todo, setTodo] = useState<Todo[]>([]);
   const [todoId, setTodoId] = useState(1);
@@ -25,7 +25,6 @@ const ToDoList: React.FC = () => {
     if (todoCompleted === true){
       setTodo(t => t.filter((_, i) => i !== index));
     }
-    
   }
 
   function handleAddText(event: React.ChangeEvent<HTMLInputElement>){
@@ -36,21 +35,41 @@ const ToDoList: React.FC = () => {
     setTodoCompleted(true)
   }
 
+  function moveTaskUp(index: number){
+    if (index > 0) {
+      const updatedTodo = [...todo];
+      [updatedTodo[index], updatedTodo[index - 1]] = [updatedTodo[index - 1], updatedTodo[index]];
+      setTodo(updatedTodo);
+    }
+  }
+
+  function moveTaskDown(index: number){
+   if (index < todo.length - 1) {
+      const updatedTodo = [...todo];
+      [updatedTodo[index], updatedTodo[index + 1]] = [updatedTodo[index + 1], updatedTodo[index]];
+      setTodo(updatedTodo);
+    } 
+  }
+
 
   return(
-  <div>
+  <div className="TodoMain">
     
-    <h2 className="">To do list</h2>
+    <h2>To do list</h2>
     
-    <div>
+    <div className="TodoAdd">
       <input type="text" value={todoText} onChange={handleAddText} placeholder="Enter task" className=""/><br/>
       <button onClick={handleAddTodo}>Add task</button>
     </div>
     
-      <ul>
+      <ul className="TodoList">
         {todo.map((todo, index) => 
           <li key={index} >
-            {todo.id}) {todo.text} {todo.completed} <input type="radio" onChange={handleCompleted}/><MdDelete onClick={() => handleRemoveTodo(index)}/>
+            {todo.id}) {todo.text} {todo.completed} 
+            <input type="radio" onChange={handleCompleted}/>
+            <MdDelete onClick={() => handleRemoveTodo(index)} />
+            <button onClick={() => moveTaskUp(index)}>Move Up</button>
+            <button onClick={() => moveTaskDown(index)}>Move Down</button>
           </li>)}
       </ul>
       
@@ -58,4 +77,4 @@ const ToDoList: React.FC = () => {
   )
 }
 
-export default ToDoList
+export default TodoList
