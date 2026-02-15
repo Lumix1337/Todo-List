@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import type { Todo } from "../types/Todo.types";
 import { MdDelete } from "react-icons/md";
 
 const TodoList: React.FC = () => {
 
-  const [todo, setTodo] = useState<Todo[]>([]);
+  const [todo, setTodo] = useState<Todo[]>(() => {
+    const saved = localStorage.getItem("todos_list");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [todoId, setTodoId] = useState(1);
   const [todoText, setTodoText] = useState("");
   const [todoCompleted, setTodoCompleted] = useState(false);
   
+  useEffect(() => {
+    localStorage.setItem("todos_list", JSON.stringify(todo));
+  }, [todo]);
+
   function handleAddTodo() {
     const newTodo = {id: todoId,
                      text: todoText,
